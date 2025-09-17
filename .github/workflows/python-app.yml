@@ -1,12 +1,16 @@
-name: MkDocs Build & Quality Checks
+name: MkDocs Build & Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'
 
 jobs:
-  build-docs:
+  build_and_validate:
+    name: Build & Validate Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -14,25 +18,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
+      - name: Set up Python environment
         uses: actions/setup-python@v5
         with:
           python-version: '3.14.0-rc.2'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build MkDocs site (strict mode)
+      - name: Build MkDocs (strict mode)
         run: mkdocs build --strict
 
       - name: Check for broken links
         run: mkdocs-linkcheck ./docs
 
-      - name: Trigger Read the Docs build
-        if: success()
+  rtd:
+    if: github.ref == 'refs/heads/main' && needs.build_and_validate.result == 'success'
+    name: Read the Docs Build
+    runs-on: ubuntu-latest
+    needs: build_and_validate
+    permissions: {}
+
+    steps:
+      - name: API Build Trigger
         run: |
           curl \
-          -X POST \
-          -H "Authorization: Token ${{ secrets.RTD_TOKEN }}" https://app.readthedocs.org/api/v3/projects/wirewolves-documentation/versions/latest/builds/
+            -X POST \
+            -H "Authorization: Token ${{ secrets.RTD_TOKEN }}" \
+            https://app.readthedocs.org/api/v3/projects/wirewolves-documentation/versions/latest/builds/
