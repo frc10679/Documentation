@@ -12,7 +12,6 @@ site_description: >-
 markdown_extensions:
   - def_list
   - attr_list
-  - pymdownx.glossary
 
 plugins:
   - git-revision-date-localized
