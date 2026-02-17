@@ -17,5 +17,12 @@ References:
 - [12 Types of CNC Machines & Their Functions](https://www.uti.edu/blog/cnc/6-cnc-machines)
 
 ### P
+
 #### PDH {PDH}
-:   Power Distrub. A comprehensive list of raw materials, assemblies, and parts needed to manufacture the robot.
+:   **Power Distribution Hub** is the REV distribution solution to distribute battery power to all other components on a robot.
+
+![PDH](./assets/images/PDH.webp)
+
+References:
+
+- [Power Distribution Hub Overview](https://docs.revrobotics.com/ion-control/pdh/overview)
