@@ -8,7 +8,7 @@ on:
 jobs:
   build_and_validate:
     name: Build & Validate
-    runs-on: ubuntu-latest
+    runs-on: astral/uv:python3.14-trixie
     permissions:
       contents: read
 
@@ -18,18 +18,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install zensical
-
       - name: Build Zensical
-        run: zensical build --clean
+        run: uvx zensical build --clean
 
   rtd:
     if: github.ref == 'refs/heads/main' && success()
     name: Trigger Read the Docs
-    runs-on: ubuntu-latest
+    runs-on: astral/uv:python3.14-trixie
     needs: build_and_validate
     permissions:
       contents: read
